@@ -561,3 +561,583 @@ function checkRole(role: Role): void {
 checkRole(Role.Admin); // ? Output: You have admin privileges.
 checkRole(Role.User); // ? Output: You are a regular user.
 checkRole(Role.Guest); // ? Output: You are a guest.
+
+// ? Functions in TypeScript:
+// Functions are a fundamental building block in TypeScript, just like in JavaScript. 
+// However, TypeScript allows you to specify the types of function parameters and return values,
+// which can help catch errors and improve code readability.
+
+
+// ? 1. Functions with parameter type annotations:
+function add(a: number, b: number) {
+    return a + b;
+}
+
+console.log(add(5, 10)); // ? Output: 15
+// console.log(add(5, "10")); // This will cause a compile-time error because "10" is not a number
+
+// ? 2. Function with return type annotation
+function add(a: number, b: number): number {
+    return a + b;
+    // This will cause a compile-time error because the function is declared to return a number
+    // return 'Hello'
+}
+
+console.log(add(3,6)); // ? Output: 9
+
+// ? 3. Optional parameters:
+// The ? symbol is used to indicate that a parameter is optional. Optional parameters can be omitted
+// when calling the function, and they will be undefined if not provided.
+function greet(name: string, greeting?: string): string {
+    if (greeting) {
+        return `${greeting}, ${name}!`;
+    } else {
+        return `Hello, ${name}!`;
+    }
+}
+
+console.log(greet("Alice")); // ? Output: Hello, Alice!
+console.log(greet("Bob", "Hi")); // ? Output: Hi, Bob!
+// console.log(greet("Charlie", 456)); // This will cause a compile-time error because 456 is not a string
+
+// ? 4. Default parameters:
+// Like in JS, you can also provide default values for parameters in TypeScript. If a parameter is not provided
+// when calling the function, it will take on the default value.
+// Default parameters should be placed after all required parameters in the function signature. 
+// If you try to place a default parameter before a required parameter, you will get a compile-time error
+function greet(age: number, name: string = "Guest") {
+    return `Hello, ${name}! You are ${age} years old.`;
+}
+
+// ? 5. Function type:
+// You can also define the type of a function itself, which includes the types of its parameters and return value.
+// This has no function body, and also defines the return type of the function. For example:
+let add: (a: number, b: number) => number;
+add = (x, y) => x + y;
+console.log(add(4, 5)); // ? Output: 9
+
+// ? 6. Keyword argumenmts:
+function profile({place, name, age}:{place:string; name:string, age:number}) {
+    console.log(place)
+    console.log(name)
+    console.log(age)
+}
+profile("UK", "Alice", 30); // This will cause a compile-time error because the function expects an object with properties place, name, and age, but it is being called with separate arguments instead.
+
+function profile({
+    place,
+    name,
+    age
+}: {
+    place: string;
+    name: string;
+    age: number;
+}) {
+    console.log(place);
+    console.log(name);
+    console.log(age);
+}
+
+profile({place: "UK", name: "Alice", age: 30}); 
+// ? Output:        
+// UK
+// Alice
+// 30
+
+// You dont need the order of the properties in the object to match the order of the 
+// parameters in the function signature, as long as the property names and types are correct.
+profile({name: "Alice", age: 30, place: "UK"}); 
+// ? Output:
+// UK
+// Alice
+// 30
+
+// ? Combination of default and keyword arguments:
+type user3 = {
+    name: string;
+    colour?: string;
+    price?: number;
+}
+
+function Mango({name, colour="yellow", price=34.45}:user3):void {
+    console.log(name, colour, price);
+}
+
+// You can call the Mango function with just the name property, and it will use the default values for colour and price.
+// But default parameters should be optional in the type definition (?), otherwise you will get a compile-time error because
+// the function expects all properties to be provided.
+Mango({name: "Alphonso"});
+// ? Output: Alphonso yellow 34.45
+
+
+
+// ? Combination of default and keyword arguments with a separate type definition for the options object:
+type Options = {
+    place?: string;
+    salary?: number;
+}
+
+function Employee(name: string, {place = "UK", salary = 40000}: Options) {
+    console.log(name);
+    console.log(place);
+    console.log(salary);
+}
+
+Employee("Alice", {}); // Use empty brackets to indicate that you are providing an options object, even though it is empty. This will allow the function to use the default values for place and salary.
+// ? Output:
+// Alice
+// UK
+// 40000
+
+// ? Arrow functions:
+const add = (a: number, b: number): number => {
+    console.log("Adding numbers...");
+    return a + b;
+}
+console.log(add(4, 6)); // ? Output: Adding numbers... 10
+
+// ? Using type aliases to define the shape of the parameters for an arrow function:
+type Numbers = {
+    a1: number;
+    b1: number;
+}
+
+const add = ({ a1, b1 }: Numbers): number => {
+    return a1 + b1;
+}
+
+console.log(add({ a1: 4, b1: 6 })); // ? Output: 10
+
+// ? Rest parameters:
+function sum(...numbs: number[]) {
+    console.log(numbs);
+}
+sum(1, 2, 3, 4, 5);
+// ? Output: [1, 2, 3, 4, 5]
+
+
+// ? To find the max value in an array using rest parameters:
+function maximum(...nums: number[]): number {
+    // No need to import Math.max, it is available globally in JavaScript and TypeScript
+    return Math.max(...nums);
+}
+
+console.log(maximum(3, 7, 2, 9, 5)); // ? Output: 9
+
+// ? TypeScript Interfaces:
+// An interface in TypeScript is a way to define the shape of an object. It is a contract that specifies the properties and 
+// methods that an object must have. Interfaces are used to enforce a certain structure on objects and can help catch errors
+// at compile time by ensuring that objects conform to the defined shape.
+
+interface Person {
+    name: string;
+    age: number;
+}
+
+// Creating an object that has to follow the Person interface:
+let person: Person = {
+    name: "Alice",
+    age: 30
+};
+
+console.log(person); // ? Output: { name: "Alice", age: 30 }
+
+// If you try to create an object that does not conform to the Person interface, you will get a compile-time error. For example:
+let person2: Person = {
+    name: "Bob"
+    // This will cause a compile-time error because the age property is missing and the object does not conform to the Person interface
+};
+
+// ? Function type
+interface Add {
+    (a: number, b: number): number;
+}
+
+let sums: Add = (x, y) => x + y;
+console.log(sums(4, 5)); // ? Output: 9
+
+// ? Interface as a function parameter:
+interface User {
+    name: string;
+    age: number;
+}
+
+function fn1(user: User) {
+    console.log(user.name, user.age);
+}
+
+fn1({ name: "Charlie", age: 40 }); // ? Output: Charlie 40
+// fn1({ name: "Charlie" }); // This will cause a compile-time error because the age property is missing and the object does not conform to the User interface
+
+// ? Interface as a return type:
+interface Product {
+    id: number;
+    name: string;
+}
+
+function getProduct(): Product {
+    return {
+        id: 101,
+        name: "Laptop"
+    }
+}
+
+let p = getProduct();
+console.log(p.id, p.name); // ? Output: 101 Laptop
+console.log(getProduct()); // ? Output: { id: 101, name: "Laptop" }
+
+// ? Interface with methods:
+interface Person {
+    name: string;
+    greet(): string;
+}
+
+let user: Person = {
+    name: "Dave",
+    greet() {
+        return `Hello, my name is ${this.name}`;
+    }
+}
+
+console.log(user.greet()); // ? Output: Hello, my name is Dave
+
+// ? Arrays:
+// In TypeScript, you can define the type of an array using square brackets [] or the Array<T> syntax.
+let numbers: number[] = [1, 2, 3, 4, 5];
+console.log(numbers); // ? Output: [1, 2, 3, 4, 5]
+
+let strings: Array<string> = ["Hello", "TypeScript", "Arrays"];
+console.log(strings); // ? Output: ["Hello", "TypeScript", "Arrays"]
+
+// Creating array with a tuple type:
+let tupleArray: [string, number][] = [
+    ["Alice", 30],
+    ["Bob", 25],
+    ["Charlie", 40]
+];
+console.log(tupleArray); // ? Output: [["Alice", 30], ["Bob", 25], ["Charlie", 40]]
+
+// Creating empty array with a specific type:
+let emptyArray: string[] = [];
+console.log(emptyArray); // ? Output: []
+emptyArray.push("Hello");
+console.log(emptyArray); // ? Output: ["Hello"]
+
+// ? You can also use the any type for arrays, but it is generally recommended to use more specific types to take advantage of TypeScript's type checking and improve code maintainability.
+let anyArray: any[] = [1, "Hello", true];
+console.log(anyArray); // ? Output: [1, "Hello", true]
+anyArray.push({ name: "Alice" });
+console.log(anyArray); // ? Output: [1, "Hello", true, { name: "Alice" }]
+
+// Creating Union type array:
+let unionArray: (number | string)[] = [1, "Hello", 2, "TypeScript"];
+console.log(unionArray); // ? Output: [1, "Hello", 2, "TypeScript"]
+
+// Creating readonly array:
+let readonlyArray: ReadonlyArray<string> = ["Alice", "Bob", "Charlie"];
+console.log(readonlyArray); // ? Output: ["Alice", "Bob", "Charlie"]
+// readonlyArray.push("Dave"); // This will cause a compile-time error because the array is readonly and cannot be modified
+
+// Create array using Array constructor:
+let nums = new Array();
+console.log(nums); // ? Output: []
+
+let nums = new Array(3);
+console.log(nums); // ? Output: [ <3 empty items> ]
+
+let nums = new Array(1, 2, 3);
+console.log(nums); // ? Output: [1, 2, 3]
+
+// ? Methods of arrays:
+// You can use all the standard array methods in TypeScript, such as push, pop, shift, unshift, map, filter, reduce, etc. For example:
+let arr: number[] = [1, 2, 3];
+arr.push(4);
+console.log(arr); // ? Output: [1, 2, 3, 4]
+
+arr.pop();
+console.log(arr); // ? Output: [1, 2, 3]
+
+arr.shift();
+console.log(arr); // ? Output: [2, 3]
+
+arr.unshift(0);
+console.log(arr); // ? Output: [0, 2, 3]
+
+let mappedArr = arr.map(x => x * 2);
+console.log(mappedArr); // ? Output: [0, 4, 6]
+
+let filteredArr = arr.filter(x => x > 1);
+console.log(filteredArr); // ? Output: [2, 3]
+
+let reducedValue = arr.reduce((acc, x) => acc + x, 0);
+console.log(reducedValue); // ? Output: 5
+
+// To remove from the middle of the array:
+let arr1: number[] = [1, 2, 3, 4, 5];
+arr1.splice(2, 1); // This will remove the element at index 2 (the number 3) from the array, and it will shift the remaining elements to fill the gap. The first parameter (2) is the starting index, and the second parameter (1) is the number of elements to remove.
+console.log(arr1); // ? Output: [1, 2, 4, 5]
+
+// Slice or splice
+// The slice method can be used to create a new array that excludes the element at index 2, without modifying the original array:
+let arr3: number[] = [1, 2, 3, 4, 5];
+let newArr = arr3.slice(0, 2).concat(arr3.slice(3));
+
+console.log(newArr); // ? Output: [1, 2, 4, 5]
+console.log(arr3); // ? Output: [1, 2, 3, 4, 5] (the original array remains unchanged)
+
+// The splice method can be used to remove the element at index 2 and modify the original array:
+let arr4: number[] = [1, 2, 3, 4, 5];
+arr4.splice(2, 1);
+console.log(arr4); // ? Output: [1, 2, 4, 5] (the original array is modified and the element at index 2 is removed)
+
+
+// Delete based on index:
+let arr2: number[] = [1, 2, 3, 4, 5];
+delete arr2[2]; // This will remove the element at index 2 (the number 3) from the array, but it will not change the length of the array or shift the remaining elements. Instead, it will leave an empty slot at index 2.
+console.log(arr2); // ? Output: [1, 2, <1 empty item>, 4, 5]
+
+// Using includes method to check if an element exists in the array:
+let arr3: number[] = [1, 2, 3, 4, 5];
+console.log(arr3.includes(3)); // ? Output: true    
+// This might cause a compile-time error if you are using an older version of TypeScript that does not support the includes method on arrays. In that case, you can use the indexOf method instead:
+console.log(arr3.indexOf(3) !== -1); // ? Output: true (this checks if the index of 3 is not -1, which means it exists in the array)
+
+// Iterating through an array using for...of loop:
+let arr4: number[] = [1, 2, 3, 4, 5];
+for (let num of arr4) {
+    console.log(num);
+}
+
+// ? Output:
+// 1
+// 2
+// 3
+// 4
+// 5    
+
+// ! TypeScript Objects:
+// In TypeScript, you can define the type of an object using an interface or a type alias. This allows you to specify the properties and their types that an object should have, which can help catch errors at compile time and improve code readability.
+// It is similar to a dictionary in Python, where you can have key-value pairs, but in TypeScript, you can also specify the types of the keys and values.
+
+// ? Defining user object without an interface:
+let user = {
+    name: "Sid",
+    age: 31
+}
+
+console.log(user); // ? Output: { name: "Sid", age: 31 }
+console.log(user.name); // ? Output: Sid
+console.log(user.age); // ? Output: 31
+
+// ? Defining user object with type annotation:
+let user1: { name: string; age: number } = {
+    name: "Alice",
+    age: 30
+};
+console.log(user1); // ? Output: { name: "Alice", age: 30 }
+console.log(user1.name); // ? Output: Alice
+console.log(user1.age); // ? Output: 30
+
+// ? Defining user object with an interface:
+interface User {
+    name: string;
+    age: number;
+}
+let user2: User = {
+    name: "Bob",
+    age: 25
+};
+console.log(user2); // ? Output: { name: "Bob", age: 25 }
+console.log(user2.name); // ? Output: Bob
+console.log(user2.age); // ? Output: 25
+
+// ? Creating an object using a constructor:
+let user5 = new Object();
+user5.name = "Charlie";
+user5.age = 40;
+console.log(user5);
+// This would work in JavaScript, but doesn't in TypeScript without a type annotation, because the Object constructor does not have a defined shape for the properties name and age.
+
+// Alternate way:
+let user = new Object() as { name: string; age: number }
+user.name = "abc"
+user.age = 45
+ 
+console.log(user) // ? Output: { name: "abc", age: 45 }
+// This works because we are using a type assertion to tell the TypeScript compiler that the object we are creating with new Object() should be treated as having the shape { name: string; age: number }. 
+// This allows us to assign properties name and age to the user object without causing a compile-time error. 
+// However, this approach is not recommended because it bypasses the benefits of TypeScript's type checking and can lead to potential runtime errors if the object does not actually conform to the asserted type.
+
+// Or:
+let user = {} as any;
+user["name"] = "abc";
+user["age"] = 45;
+console.log(user); // ? Output: { name: "abc", age: 45 }
+// This works because we are using a type assertion to tell the TypeScript compiler that the object we are creating should be treated as having the any type, which allows us to assign properties name and age to the user object without causing a compile-time error. 
+// However, this approach is not recommended because it effectively disables TypeScript's type checking for the user object and can lead to potential runtime errors if the object does not actually conform to the expected shape.
+
+// Or:
+let user = Object.create({});
+user.name = "abc";
+user.age = 45;
+console.log(user); // ? Output: { name: "abc", age: 45 }
+// This works because Object.create({}) creates a new object with an empty object as its prototype, and we can then assign properties name and age to the user object without causing a compile-time error. 
+// However, this approach is not recommended because it does not provide any type safety or structure for the user object, and it can lead to potential runtime errors if the object does not actually conform to the expected shape.
+
+
+// ? Using Object.create to create an object with a sp5ecific prototype:
+let proto = { greet() { return "Hello!"; } };
+let user = Object.create(proto);
+user.name = "Dave";
+user.age = 35;
+console.log(user); // ? Output: { name: "Dave", age: 35 }
+console.log(user.greet()); // ? Output: Hello!
+
+// ? Methods of objects:
+let user: { name: string} = {
+    name: "Eve",
+    greet() {
+        return `Hello, my name is ${this.name}`;
+    }
+}
+console.log(user.greet()); // ? Output: Hello, my name is Eve
+
+// ? Add a new key to an object:
+let user: { name: string; age: number } = {
+    name: "Frank",
+    age: 28
+}
+user.email = "frank@example.com";
+console.log(user); // ? Output: { name: "Frank", age: 28, email: "frank@example.com" }
+// Replace the object with a new one:
+user["name"] = "Grace";
+user["age"] = 32;
+console.log(user); // ? Output: { name: "Grace", age: 32, email: "frank@example.com" }
+
+// Delete a key from an object:
+delete user.email;
+console.log(user); // ? Output: { name: "Grace", age: 32 }
+
+// Combine two objects:
+let obj1 = { name: "Heidi", age: 27 };
+let obj2 = { email: "heidi@example.com" };
+let combined = { ...obj1, ...obj2 };
+console.log(combined); // ? Output: { name: "Heidi", age: 27, email: "heidi@example.com" }
+
+// Using Object.assign to combine two objects:
+let obj3 = { name: "Ivan", age: 31 };
+let obj4 = { email: "ivan@example.com" };
+let combined2 = Object.assign({}, obj3, obj4);
+console.log(combined2); // ? Output: { name: "Ivan", age: 31, email: "ivan@example.com" }
+
+// Making objects immutable:
+let user: { name: string; age: number } = {
+    name: "Judy",
+    age: 29
+};
+Object.freeze(user);
+console.log(user); // ? Output: { name: "Judy", age: 29 }
+user.name = "Karl"; // This will not change the name property because the object is frozen and cannot be modified
+console.log(user); // ? Output: { name: "Judy", age: 29 }
+
+// Iterating through the keys of an object using for...in loop:
+let user = { place: "UK", salary: 80000 };
+for (let key in user) {
+    console.log(key, user[key]);
+}
+
+// ! TypeScript Classes:
+// In TypeScript, you can define classes using the class keyword. A class is a blueprint for creating objects with specific properties and methods. 
+// TypeScript classes support features such as inheritance, access modifiers, and static members, which can help you write more organised and maintainable code.
+
+// ? Defining a class:
+class Person {
+    name: string;
+    age: number;
+    constructor(name: string, age: number) {
+        this.name = name;
+        this.age = age;
+    }
+    greet() {
+        return `Hello, my name is ${this.name} and I am ${this.age} years old.`;
+    }
+}
+let person1 = new Person("Alice", 30);
+console.log(person1); // ? Output: Person { name: "Alice", age: 30 }
+console.log(person1.name); // ? Output: Alice
+console.log(person1.age); // ? Output: 30
+console.log(person1.greet()); // ? Output: Hello, my name is Alice and I am 30 years old.
+
+// You cannot use `let` or `const` to declare a class, because classes are not variables, they are templates for creating objects.
+
+// Static keyword:
+// Static members of a class are shared among all instances of the class, and they can be accessed without creating an instance of the class.
+class MyClass {
+    static staticProperty: string = "I am a static property"
+    static staticMethod() {
+        return "I am a static method";
+    }
+}
+console.log(MyClass.staticProperty); // ? Output: I am a static property
+console.log(MyClass.staticMethod()); // ? Output: I am a static method
+
+// Static methods can be called on the class itself, without needing to create an instance of the class.
+// Using static keyword to define a static method:
+class MathUtils {
+    static add(a: number, b: number): number {
+        return a + b;
+    }
+    static multiply(a: number, b: number): number {
+        return a * b;
+    }
+}
+console.log(MathUtils.add(5, 10)); // ? Output: 15
+console.log(MathUtils.multiply(5, 10)); // ? Output: 50
+// Without the static keyword, output would be TypeError: MathUtils.add is not a function, because add would be an instance method
+// and you would need to create an instance of MathUtils to call it.
+
+// ? Example 2: Using a class to implement a type (similar to an interface):
+type profileType = {
+    name: string;
+    age: number;
+}
+
+class Profile implements profileType {
+    name: string = "Sid";
+    age: number = 31;
+    place: string = "UK";
+}
+
+const p = new Profile();
+console.log(p); // ? Output: Profile { name: "Sid", age: 31, place: "UK" }
+console.log(p.name); // ? Output: Sid
+console.log(p.age); // ? Output: 31
+console.log(p.place); // ? Output: UK
+
+// ? Example 3: Using interfaces to define the shape of a class:
+interface Vehicle {
+    make: string;
+    model: string;
+    year: number;
+    getInfo(): string;
+}
+
+class Car implements Vehicle {
+    make: string;
+    model: string;
+    year: number;
+    constructor(make: string, model: string, year: number) {
+        this.make = make;
+        this.model = model;
+        this.year = year;
+    }
+    getInfo() {
+        return `${this.year} ${this.make} ${this.model}`;
+    }
+}
+const myCar = new Car("Toyota", "Camry", 2020);
+console.log(myCar.getInfo()); // ? Output: 2020 Toyota Camry
+console.log(myCar.make); // ? Output: Toyota
+console.log(myCar.model); // ? Output: Camry
+console.log(myCar.year); // ? Output: 2020
+
