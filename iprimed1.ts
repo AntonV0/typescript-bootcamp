@@ -1141,3 +1141,661 @@ console.log(myCar.make); // ? Output: Toyota
 console.log(myCar.model); // ? Output: Camry
 console.log(myCar.year); // ? Output: 2020
 
+// ! CHANGE NOTES LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// ? ---------------------> March-5 2026
+// ! diff between type and interface
+
+// // interface Person1 {
+// //   name: string
+// // }
+
+// // interface Person1 {
+// //   email: string
+// // }
+
+// // class User3 implements Person1 {
+// //   name: string = 'kevin'
+// //   email: string = 'kev@gmai.com'
+// // }
+
+// // const u = new User3()
+// // console.log(u.name, u.email)
+
+// // ? same above using type
+// // type Person1 = {
+// //   name: string
+// // }
+
+// // type Person1 = {
+// //   email: string
+// // }
+
+// // class User3 implements Person1 {
+// //   name: string = 'kevin'
+// //   email: string = 'kev@gmai.com'
+// // }
+
+// // const u = new User3()
+// // console.log(u.name, u.email)
+
+// // ? Eg:2
+// // type Status = 'success' | 'error'
+
+// // class Response_API {
+// //   status: Status = 'success'
+// // }
+
+// // const res = new Response_API()
+// // console.log(res.status)
+
+// // interface Status {'success' | 'error'}
+
+// // class Response_API {
+// //   status: Status = 'success'
+// // }
+
+// // const res = new Response_API()
+// // console.log(res.status)
+
+// // ? Eg:3
+
+// // type ID = number
+
+// // class employee {
+// //   id: ID = 101
+// // }
+// // const e = new employee()
+// // console.log(e.id)
+
+// // interface ID = number
+
+// // class employee {
+// //   id: ID = 101
+// // }
+// // const e = new employee()
+// // console.log(e.id)
+
+// // ? Eg:4
+// // ? Methods inside class
+
+// // while creating method should not use keyword function
+// // class Profile {
+// //   // let place:string="UK" // error
+
+// //   display(): void {
+// //     // instance method
+// //     let name: string = 'Jim'
+// //     let age: number = 29
+// //     console.log(name, age)
+// //   }
+// // }
+
+// // const p = new Profile()
+// // p.display()
+// // Profile.display() // error
+
+// // ? static method
+// // class Profile {
+// //   // let place:string="UK" // error
+
+// //   static display(): void {
+// //     // instance method
+// //     let name: string = 'Jim'
+// //     let age: number = 29
+// //     console.log(name, age)
+// //   }
+// // }
+
+// // const p = new Profile()
+// // p.display() // error
+// // Profile.display()
+
+// // ? Method with params
+// // class veg {
+// //   carrot(name: string, color: string) {
+// //     let fname = name
+// //     let fcolor = color
+// //     console.log(fname, fcolor)
+// //   }
+// // }
+
+// // const v = new veg()
+// // v.carrot('Carrot', 'Orange')
+
+// // ? to use return
+// // class veg {
+// //   carrot(name: string, color: string): string[] {
+// //     let fname = name
+// //     let fcolor = color
+// //     return [fname, fcolor]
+// //   }
+// // }
+
+// // const v = new veg()
+// // console.log(v.carrot('Carrot', 'Orange'))
+
+// // ? to access class atributes with in method
+// // class fruits {
+// //   name: string = 'apple'
+// //   color: string = 'red'
+// //   isFruit: boolean = true
+// //   price: undefined = undefined
+
+// //   show(): void {
+// //     console.log(this.name, this.color, this.isFruit, this.price)
+// //   }
+// // }
+
+// // const f = new fruits()
+// // f.show()
+
+// // ?  static+class method
+// // class fruits {
+// //   static name1: string = 'berry'
+// //   static price: number = 45.32
+
+// //   show(): void {
+// //     console.log(fruits.name1, fruits.price)
+// //   }
+// // }
+
+// // const f = new fruits()
+// // f.show()
+
+// // ? M1 -->. Top access attributed from one method to another
+// // class Proile {
+// //   details(): [string, number] {
+// //     let name: string = 'sid'
+// //     let age: number = 1
+// //     return [name, age]
+// //   }
+
+// //   display(): void {
+// //     console.log(this.details())
+// //   }
+// // }
+// // const p = new Proile()
+// // p.display()
+
+// // ? M2
+// // class Profile {
+// //   name!: string
+// //   age!: number
+
+// //   details(): void {
+// //     this.name = 'sid'
+// //     this.age = 1
+// //   }
+
+// //   display(): void {
+// //     console.log(this.name, this.age)
+// //   }
+// // }
+
+// // const p = new Profile()
+// // p.details()
+// // p.display()
+
+// // ! -----------> constructor
+// // constructors are secial methods which has the ability o execute itself through the process of instantation
+
+// // create  constructors with constructor keyword
+
+// // ?  Non-parameter constructor
+// // class Myclass {
+// //   constructor() {
+// //     console.log('Iam constructor')
+// //   }
+// // }
+
+// // const obj = new Myclass()
+
+// // ? parameter constructor
+// // class MyClass {
+// //   constructor(name: string, mark: number) {
+// //     console.log(name, mark)
+// //   }
+// // }
+
+// // const obj = new MyClass('Mike', 97)
+
+// // ? to define multiple constructors
+// // class MyClass {
+// //   constructor(name: string, mark: number) {
+// //     console.log(name, mark)
+// //   }
+// //   constructor() {
+// //     console.log('Iam 2nd contructor')
+// //   }
+// // }
+
+// // const obj = new MyClass('Mike', 97) // error
+
+// // ? using optional parameter
+// // class bank {
+// //   constructor(name?: string) {
+// //     if (name) {
+// //       console.log('Contructor with name', name)
+// //     } else {
+// //       console.log('constructor without name')
+// //     }
+// //   }
+// // }
+
+// // const SBI = new bank('sbi')
+
+// //  ! ---> Life time access to the canvas
+// //  ! -----> recordings have not got after week 4
+// //  ! -----> Krithika --> cannot login to portal
+// //  ! ---> Bhavyatha --> Pls try to contact her once
+// // ? Passing dynamic data
+// // class Student {
+// //   fname: string
+// //   fage: number
+
+// //   constructor(name: string, age: number) {
+// //     this.fname = name
+// //     this.fage = age
+// //   }
+
+// //   display(): void {
+// //     console.log(this.fname, this.fage)
+// //   }
+// // }
+
+// // const obj = new Student('sid', 31)
+// // obj.display()
+
+// // ? can change the attribute value outside the class
+// // class Person {
+// //   id: number
+// //   constructor(id: number) {
+// //     this.id = id
+// //   }
+
+// //   show() {
+// //     console.log(this.id)
+// //   }
+// // }
+
+// // let p1 = new Person(1)
+// // p1.show() // 1
+// // p1.id = 34
+// // p1.show() // 34
+
+// // readonly
+// // It just allows you t read the value
+// // class Person {
+// //   readonly id: number
+
+// //   constructor(id: number) {
+// //     this.id = id
+// //   }
+
+// //   show() {
+// //     console.log(this.id)
+// //   }
+// // }
+
+// // let p1 = new Person(1)
+// // p1.show() // 1
+// // p1.id = 34
+// // p1.show() // error
+
+// // ? last eg
+// // type profile_type = {
+// //   name: string
+// //   age: string | number
+// //   display(): void
+// // }
+
+// // class profile implements profile_type {
+// //   name!: string
+// //   age!: string | number
+
+// //   setDeails(name: string, age: number) {
+// //     this.name = name
+// //     this.age = age
+// //   }
+// //   display(): void {
+// //     console.log(this.name, this.age)
+// //   }
+// // }
+// // const p = new profile()
+// // p.setDeails('sidhu', 31)
+// // p.display()
+
+// // ! inheritance
+// // Single
+// // multi level
+// // multiple
+// // heirarichal
+// // hybrid
+
+// // ? single inheritance
+// // ? single parent and single child
+// // ? Eg:1
+// // class animal {
+// //   eat(): void {
+// //     console.log('Animal eating')
+// //   }
+// // }
+
+// // class Dog extends animal {
+// //   bark(): void {
+// //     console.log('Dog barks')
+// //   }
+// // }
+
+// // const d = new Dog()
+// // d.eat()
+// // d.bark()
+
+// // ? Eg:2
+// // class Animal {
+// //   static animalType: string = 'carnivore'
+// //   name = 'Lion'
+// // }
+
+// // class Lion extends Animal {
+// //   // console.log(Animal.animalType); // error
+// //   // console.log(name); // error
+// //   roar(): void {
+// //     console.log(Animal.animalType)
+// //   }
+// // }
+
+// // const l1 = new Lion()
+// // l1.roar()
+// // console.log(l1.name)
+
+// // ? Eg:3
+// // class Animal {
+// //   name: string
+
+// //   constructor(name: string) {
+// //     this.name = name
+// //   }
+// // }
+
+// // class Cow extends Animal {
+// //   breed: string
+
+// //   constructor(name: string, breed: string) {
+// //     super(name)
+// //     this.breed = breed
+// //   }
+
+// //   display() {
+// //     console.log(this.breed)
+// //     console.log(this.name)
+// //   }
+// // }
+
+// // const d = new Cow('cow', 'Jercy')
+// // d.display()
+
+// // ! Multilevel inhertance
+// // class Vehicle {
+// //   brand: string
+
+// //   constructor(brand: string) {
+// //     this.brand = brand
+// //   }
+
+// //   showBrand(): void {
+// //     console.log('Brand', this.brand)
+// //   }
+// // }
+// // class Car extends Vehicle {
+// //   model: string
+
+// //   constructor(model: string, brand: string) {
+// //     super(brand)
+// //     this.model = model
+// //   }
+
+// //   showModel(): void {
+// //     console.log('Model: ', this.model)
+// //   }
+// // }
+
+// // class sportscar extends Car {
+// //   speed: number
+
+// //   constructor(speed: number, model: string, brand: string) {
+// //     super(brand, model)
+// //     this.speed = speed
+// //   }
+
+// //   showdetails(): void {
+// //     this.showBrand()
+// //     this.showModel()
+// //     console.log('Top speed:', this.speed)
+// //   }
+// // }
+
+// // const sc = new sportscar(300, 'M3', 'BMW')
+// // sc.showdetails()
+
+// // ?  Hybrid inheritance
+// // 1 class will act as parent for all  child classes
+// // class c1 {
+// //   c1_method(): void {
+// //     console.log('cl class')
+// //   }
+// // }
+
+// // class c2 extends c1 {
+// //   c2_method(): void {
+// //     console.log('c2 class')
+// //   }
+// // }
+
+// // class c3 extends c1 {
+// //   c3_method(): void {
+// //     console.log('c3 method')
+// //   }
+// // }
+
+// // const c3_obj = new c3()
+// // c3_obj.c1_method()
+// // c3_obj.c3_method()
+
+// // const c2_obj = new c2()
+// // c2_obj.c1_method()
+// // c2_obj.c2_method()
+
+// //?  Multiple inheritance
+// // single child and multiple parents
+
+// // interface()
+// // ? Eg:1
+// // interface MusicPlayer {
+// //   playMusic(): void
+// // }
+
+// // interface camera {
+// //   takePhoto(): void
+// // }
+
+// // class phone implements camera, MusicPlayer {
+// //   takePhoto(): void {
+// //     console.log('taking photoes')
+// //   }
+
+// //   playMusic(): void {
+// //     console.log('Playing fun music')
+// //   }
+// // }
+
+// // const s = new phone()
+// // s.playMusic()
+// // s.takePhoto()
+
+// // ? Hybrid
+// // combination of 2 or  more type of inheritance is hybrid inheritance
+// class product {
+//   show(): void {
+//     console.log('Product details')
+//   }
+// }
+
+// class Electroics extends product {
+//   brand(): void {
+//     console.log('Electronics brtand  method')
+//   }
+// }
+
+// class mobiles extends Electroics {
+//   mobileFeatures(): void {
+//     console.log('Mobile feature')
+//   }
+// }
+
+// class clothing extends product {
+//   size(): void {
+//     console.log('cloth size method')
+//   }
+// }
+
+// const m = new mobiles()
+// m.brand()
+// m.mobileFeatures()
+
+// const c = new clothing()
+// c.size()
+// c.show()
+
+// ! Polymorphism
+// Polymorphism is a fundamental concept in object-oriented programming that allows objects of different classes to be treated as objects of a common superclass.
+// It enables a single interface to represent different underlying data types, allowing for flexibility and extensibility in code design.
+
+// If the same method is defined in multiple classes, the method that gets called will depend on the type of the object that is being used to call the method. This is known as method overriding, and it allows for polymorphism in TypeScript.
+
+// ? Example of polymorphism using method overriding:
+class Product {
+    show(): void {
+        console.log('Product details')
+    }
+}
+
+class Electronics {
+    show(): void {
+        console.log('Electronics details')
+    }
+}
+
+class Sports extends Product {
+    show(): void {
+        console.log('Sports details')
+    }
+}
+
+let p = new Product();
+let e = new Electronics();
+let s = new Sports();
+p.show(); // ? Output: Product details
+e.show(); // ? Output: Electronics details
+s.show(); // ? Output: Sports details
+// Same method name but different implementation based on the class, this is polymorphism through method overriding.
+
+let items: any = [p, e, s];  
+items.forEach((item: any) => {
+    item.show();
+});
+// Another way to write the above code using for...of loop:
+for (let item of items) {
+    item.show();
+}
+
+// ? Output:
+// Product details
+// Electronics details
+// Sports details
+// This demonstrates polymorphism because we are treating all items as type product, but the actual method that gets called is determined by the runtime type of the object (Product, Electronics, or Sports).
+
+// ? Method overloading:
+// Method overloading is a feature that allows a class to have multiple methods with the same name but different parameters. However, TypeScript does not support method overloading in the traditional sense like some other programming languages do. Instead, you can achieve similar functionality using optional parameters or by using union types for the parameters.
+
+class Calculator {
+    add(a: number, b: number): number;
+    add(a: string, b: string): string;
+    add(a: any, b: any): any {
+        return a + b;
+    }
+}
+
+const calc = new Calculator();
+console.log(calc.add(5, 10)); // ? Output: 15
+console.log(calc.add("Hello, ", "world!")); // ? Output: Hello, world!
+// In this example, we have defined two overloads for the add method: one that takes two numbers and returns a number, and another that takes two strings and returns a string. The actual implementation of the add method uses the any type for the parameters, which allows it to handle both cases.
+
+class C1 {
+    c2(): void {
+        console.log('Hello there')
+    }
+    c2(name: string): void {
+        console.log('Hello there', name)
+    }
+}
+
+const c = new C1()
+c.c2() // error
+c.c2('Sid') // error
+// This will cause a compile-time error because TypeScript does not support method overloading in the traditional sense, and the second definition of the c2 method will overwrite the first one.
+
+// To achieve similar functionality, you can use optional parameters or union types:
+class C1 {
+    c2(name?: string): void {
+        if (name) {
+            console.log('Hello there', name)
+        } else {
+            console.log('Hello there')
+        }
+    }
+}
+
+const c = new C1()
+c.c2() // Output: Hello there
+c.c2('Sid') // Output: Hello there Sid
+// In this example, we have defined a single c2 method with an optional parameter name. The method checks if the name parameter is provided and behaves accordingly, allowing us to achieve similar functionality to method overloading.
+
+// Another way to achieve method overloading using union types:
+class C1 {
+    c2(name: string): void;
+    c2(name: number): void;
+    c2(name: any): void {
+        if (typeof name === 'string') {
+            console.log('Hello there', name)
+        } else if (typeof name === 'number') {
+            console.log('Hello there', name)
+        }
+    }
+}
+
+const c = new C1()
+c.c2('Sid') // Output: Hello there Sid
+c.c2(123) // Output: Hello there 123
+// In this example, we have defined two overloads for the c2 method: one that takes a string and another that takes a number. The actual implementation of the c2 method uses the any type for the parameter, and it checks the type of the parameter at runtime to determine how to handle it.
+
+// Another way to achieve method overloading using optional parameters and union types: 
+
+class c1 {
+    c2(name: string): void;
+    c2(name: string, place: string): void
+
+    c2(name: string, place?: string): void {
+        if (place) {
+            console.log('Hello there', name, 'from', place)
+        } else {
+            console.log('Hello there', name)
+        }
+    }  
+}
+
+const c = new c1()
+c.c2('Sid') // Output: Hello there Sid
+c.c2('Sid', 'UK') // Output: Hello there Sid from UK
+// In this example, we have defined two overloads for the c2 method: one that takes a single string parameter and another that takes two string parameters. The actual implementation of the c2 method uses an optional parameter place, which allows it to handle both cases. The method checks if the place parameter is provided and behaves accordingly, allowing us to achieve similar functionality to method overloading.
+
