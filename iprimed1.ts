@@ -1799,3 +1799,488 @@ c.c2('Sid') // Output: Hello there Sid
 c.c2('Sid', 'UK') // Output: Hello there Sid from UK
 // In this example, we have defined two overloads for the c2 method: one that takes a single string parameter and another that takes two string parameters. The actual implementation of the c2 method uses an optional parameter place, which allows it to handle both cases. The method checks if the place parameter is provided and behaves accordingly, allowing us to achieve similar functionality to method overloading.
 
+// ! Decorators
+// Decorators are a powerful feature in TypeScript that allow you to modify the behavior of classes, methods, properties, or parameters at design time. They are essentially functions that can be attached to various elements of your code to add metadata or alter their behavior in some way. Decorators are often used for tasks such as logging, validation, or dependency injection.
+
+// To use decorators in TypeScript, you need to enable the experimentalDecorators compiler option in your tsconfig.json file. Once enabled, you can define and apply decorators to your classes, methods, properties, or parameters.
+
+// Simple class decorator:
+function ageDecorator(element: any) {
+    element.prototype.age = 30;
+}
+
+@ageDecorator
+class Person10 {
+    name = 'Kevin'
+    greet() {
+        console.log(`Hello ${this.name}`)
+    }
+}
+
+let p = new Person10();
+p.greet(); // ? Output: Hello Kevin
+console.log(p.name); // ? Output: Kevin
+console.log((p as any).age); // ? Output: 30
+
+
+
+// ? Example of a class decorator:
+function logClass(target: any) {
+    console.log(`Class ${target.name} has been decorated`);
+}
+
+@logClass
+class MyClass {
+    constructor() {
+        console.log('MyClass constructor called');
+    }
+}
+// ? Output:
+// Class MyClass has been decorated
+// MyClass constructor called
+// In this example, we have defined a class decorator logClass that takes the target class as an argument and logs a message when the class is decorated. We then apply this decorator to MyClass using the @logClass syntax. When we create an instance of MyClass, we see the output from both the decorator and the constructor.
+
+// ? Example using multiple decorators:
+function decorator_function1 (constructor: any) {
+    console.log('decorator function 1 called')
+}
+
+function decorator_function2 (constructor: any) {
+    console.log('decorator function 2 called')
+}
+
+@decorator_function1 // Called second
+@decorator_function2 // Called first
+class User { // Called last
+    constructor() {
+        console.log('User constructor called');
+    }
+}
+// ? Output:
+// decorator function 2 called
+// decorator function 1 called
+// User constructor called
+// When we apply both decorators to User, they are executed in the order they are applied (from bottom to top), resulting in the output shown above.
+
+// ? Example of a method decorator:
+function decorator_method(target: any, methodName: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+        console.log("Method is called");
+        return originalMethod.apply(this, args);
+    }
+}
+
+
+class Person {
+    @decorator_method
+    greet() {
+        console.log("Hello, world!");
+    }
+}
+
+const p = new Person();
+p.greet(); // ? Output: Hello, world!
+
+
+// ? Another example of a method decorator:
+function logMethod(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+        console.log(`Method ${propertyKey} has been called with arguments: ${args.join(', ')}`);
+        return originalMethod.apply(this, args);
+    }
+}
+
+class MyClass1 {
+    @logMethod
+    myMethod(arg1: string, arg2: number) {
+        console.log(`Executing myMethod with ${arg1} and ${arg2}`);
+    }
+}
+const obj = new MyClass1();
+obj.myMethod('Hello', 42);
+// ? Output:
+// Method myMethod has been called with arguments: Hello, 42
+// Executing myMethod with Hello and 42
+// In this example, we have defined a method decorator logMethod that takes the target object, the property key (method name), and the method descriptor as arguments. The decorator wraps the original method with a new function that logs a message before calling the original method. We then apply this decorator to myMethod using the @logMethod syntax. When we call myMethod, we see the output from both the decorator and the original method.
+
+// Both examples above do not work as expected in TypeScript, but this does:
+function decorator_method2(originalMethod: any, context: ClassMethodDecoratorContext) {
+    return function (this: any, ...args: any[]) {
+        console.log("Method is called");
+        return originalMethod.apply(this, args);
+    };
+}
+class Person11 {
+    @decorator_method2
+    greet() {
+        console.log("Hello, world!");
+    }
+}
+
+// ? Output:
+// Method is called
+// Hello, world!
+
+// ? Another example of a method decorator using the new decorator syntax:
+
+function uppercase_decor(
+    originalMethod: (...args: any[]) => string,
+    context: ClassMethodDecoratorContext
+) {
+    return function (this: any, ...args: any[]) {
+        const result = originalMethod.apply(this, args);
+        return result.toUpperCase();
+    };
+}
+
+class MyClass4 {
+    name = "Anton";
+
+    @uppercase_decor
+    myMethod1(): string {
+        return `hello ${this.name}`;
+    }
+}
+
+const obj5 = new MyClass4();
+console.log(obj5.myMethod1()); // HELLO ANTON
+
+// ? Similar Example:
+function uppercase_decor2(initialValue: string) {
+    return initialValue.toUpperCase();
+}
+
+class Person15 {
+    name = uppercase_decor2('Greetings');
+}
+
+const p15 = new Person15();
+console.log(p15.name); // ? Output: GREETINGS
+
+
+// ? Example of a property decorator:
+function logProperty(target: any, propertyKey: string) {
+    let value = target[propertyKey];
+    const getter = function () {        
+        console.log(`Getting value of ${propertyKey}: ${value}`);
+        return value;
+    }
+    const setter = function (newVal: any) {
+        console.log(`Setting value of ${propertyKey} to: ${newVal}`);
+        value = newVal;
+    }
+    Object.defineProperty(target, propertyKey, {
+        get: getter,
+        set: setter,
+        enumerable: true,
+        configurable: true
+    });
+}
+
+class MyClass2 {
+    @logProperty
+    myProperty: string = 'Initial value';
+}
+const obj2 = new MyClass2();
+console.log(obj2.myProperty);
+obj2.myProperty = 'New value';
+console.log(obj2.myProperty);
+// ? Output:
+// Getting value of myProperty: Initial value
+// Initial value
+// Setting value of myProperty to: New value
+// Getting value of myProperty: New value
+// New value
+// In this example, we have defined a property decorator logProperty that takes the target object and the property key as arguments. The decorator creates custom getter and setter functions for the property that log messages when the property is accessed or modified. We then apply this decorator to myProperty using the @logProperty syntax. When we access or modify myProperty, we see the output from both the getter and setter functions.
+
+// ? Example of a parameter decorator:
+
+function logParameter(target: any, propertyKey: string, parameterIndex: number) {
+    const originalMethod = target[propertyKey];
+    target[propertyKey] = function (...args: any[]) {
+        console.log(`Parameter at index ${parameterIndex} has been called with value: ${args[parameterIndex]}`);
+        return originalMethod.apply(this, args);
+    }
+}
+class MyClass3 {
+    myMethod(@logParameter param1: string, @logParameter param2: number) {
+        console.log(`Executing myMethod with ${param1} and ${param2}`);
+    }
+}
+const obj3 = new MyClass3();
+obj3.myMethod('Hello', 42);
+// ? Output:
+// Parameter at index 0 has been called with value: Hello
+// Parameter at index 1 has been called with value: 42
+// Executing myMethod with Hello and 42
+// In this example, we have defined a parameter decorator logParameter that takes the target object, the property key (method name), and the parameter index as arguments. The decorator wraps the original method with a new function that logs a message before calling the original method. We then apply this decorator to both parameters of myMethod using the @logParameter syntax. When we call myMethod, we see the output from both parameter decorators and the original method.
+
+// ! Abstract Classes
+// An abstract class is a class that cannot be instantiated on its own and is meant to be subclassed. It can contain both abstract methods (which must be implemented by subclasses) and concrete methods (which have an implementation in the abstract class). Abstract classes are useful for defining a common interface or base functionality that can be shared among multiple subclasses.
+
+// To define an abstract class in TypeScript, you use the abstract keyword before the class declaration. Abstract methods are declared without an implementation and must be implemented by any non-abstract subclass.
+
+// ? Example of an abstract class:
+
+abstract class Animal { // Abstract class
+    abstract makeSound(): void; // Abstract method, must be implemented by subclasses
+    move(): void { // Concrete method, can be used by subclasses
+        console.log('Moving along!');
+    }
+}
+
+class Dog extends Animal { // Subclass that extends the abstract class
+    makeSound(): void {  // Implementation of the abstract method
+        console.log('Woof!');
+    }
+}
+
+const myDog = new Dog();
+myDog.makeSound(); // ? Output: Woof!
+myDog.move(); // ? Output: Moving along!
+// In this example, we have defined an abstract class Animal with an abstract method makeSound and a concrete method move. The Dog class extends Animal and provides an implementation for the makeSound method. We can create an instance of Dog and call both the makeSound and move methods, demonstrating the use of abstract classes in TypeScript.
+
+// ? Another example of an abstract class and method:
+
+abstract class Vegetable {
+    abstract color: string; // Abstract property
+    abstract taste(): string; // Abstract method
+
+    describe(): void { // Concrete method
+        console.log(`This vegetable is ${this.color} and tastes ${this.taste()}.`);
+    }
+}
+
+class Carrot extends Vegetable {
+    color: string = 'orange'; // Implementation of the abstract property
+    taste(): string { // Implementation of the abstract method
+        return 'sweet';
+    }
+}
+
+const myCarrot = new Carrot();
+myCarrot.describe(); // ? Output: This vegetable is orange and tastes sweet.
+// In this example, we have defined an abstract class Vegetable with an abstract property color and an abstract method taste. The Carrot class extends Vegetable and provides implementations for both the color property and the taste method. We can create an instance of Carrot and call the describe method, which uses both the abstract property and method to provide a description of the vegetable.
+
+// ? Abstract classes can also have constructors, which can be called by subclasses using the super keyword:
+
+abstract class Shape {
+    constructor(public name: string) {}
+    abstract area(): number; // Abstract method
+    describe(): void { // Concrete method
+        console.log(`This is a ${this.name} with an area of ${this.area()}.`);
+    }
+}
+
+class Circle extends Shape {
+    constructor(public radius: number) {
+        super('Circle');
+    }
+    area(): number {
+        return Math.PI * this.radius * this.radius;
+    }
+}
+
+const myCircle = new Circle(5);
+myCircle.describe(); // ? Output: This is a Circle with an area of 78.53981633974483.
+// In this example, we have defined an abstract class Shape with a constructor that takes a name parameter. The Circle class extends Shape and calls the super constructor to set the name property. The Circle class also provides an implementation for the area method. We can create an instance of Circle and call the describe method, which uses both the constructor and the abstract method to provide a description of the shape.
+
+// ? Abstract classes can also be used to define a common interface for a group of related classes, while still allowing for different implementations:
+
+abstract class Employee {
+    constructor(public name: string) {}
+    abstract calculateSalary(): number; // Abstract method
+    describe(): void { // Concrete method
+        console.log(`${this.name} earns ${this.calculateSalary()} per month.`);
+    }
+}
+
+class FullTimeEmployee extends Employee {
+    calculateSalary(): number {
+        return 5000;
+    }
+}
+
+class PartTimeEmployee extends Employee {
+    calculateSalary(): number {
+        return 2000;
+    }
+}
+
+const fullTimeEmp = new FullTimeEmployee('Alice');
+const partTimeEmp = new PartTimeEmployee('Bob');
+fullTimeEmp.describe(); // ? Output: Alice earns 5000 per month.
+partTimeEmp.describe(); // ? Output: Bob earns 2000 per month.
+// In this example, we have defined an abstract class Employee with a constructor that takes a name parameter and an abstract method calculateSalary. The FullTimeEmployee and PartTimeEmployee classes extend Employee and provide different implementations for the calculateSalary method. We can create instances of both classes and call the describe method, which uses the common interface defined by the abstract class while allowing for different implementations of the salary calculation.
+
+
+// ? Abstract classes can also be used to enforce a certain structure on subclasses, ensuring that they implement specific methods or properties:
+
+abstract class Database {
+    abstract connect(): void; // Abstract method
+    abstract disconnect(): void; // Abstract method
+    query(sql: string): void { // Concrete method
+        console.log(`Executing query: ${sql}`);
+    }
+}
+
+class MySQLDatabase extends Database {
+    connect(): void {
+        console.log('Connecting to MySQL database...');
+    }
+    disconnect(): void {
+        console.log('Disconnecting from MySQL database...');
+    }
+}
+
+const mySQLDB = new MySQLDatabase();
+mySQLDB.connect();
+mySQLDB.query('SELECT * FROM users');
+mySQLDB.disconnect();
+// ? Output:
+// Connecting to MySQL database...
+// Executing query: SELECT * FROM users
+// Disconnecting from MySQL database...
+
+// ? Abstract properties can also be defined in abstract classes, and they must be implemented by subclasses:
+
+abstract class Vehicle {
+    abstract make1: string; // Abstract property
+    abstract model1: string; // Abstract property
+    describe(): void { // Concrete method
+        console.log(`This is a ${this.make1} ${this.model1}.`);
+    }
+}
+
+class Car extends Vehicle {
+    make1: string = 'Toyota';
+    model1: string = 'Camry';
+}
+const myCar = new Car();
+myCar.describe(); // ? Output: This is a Toyota Camry.
+// In this example, we have defined an abstract class Vehicle with two abstract properties, make1 and model1. The Car class extends Vehicle and provides implementations for both properties. We can create an instance of Car and call the describe method, which uses the abstract properties to provide a description of the vehicle.
+
+// ? Regular methods in abstract classes can also call abstract methods, allowing for a template method pattern:
+abstract class Report2 {
+    generate(): void { // Concrete method
+        this.fetchData(); // Call to abstract method
+        console.log('Generating report...');
+    }
+    abstract fetchData(): void; // Abstract method
+}
+
+class SalesReport extends Report2 {
+    fetchData(): void { // Implementation of the abstract method
+        console.log('Fetching sales data...');
+    }
+}
+const salesReport = new SalesReport();
+salesReport.generate();
+// ? Output:
+// Fetching sales data...
+// Generating report...
+// In this example, we have defined an abstract class Report2 with a concrete method generate that calls an abstract method fetchData. The SalesReport class extends Report2 and provides an implementation for the fetchData method. When we call the generate method on an instance of SalesReport, it first calls the fetchData method to fetch the sales data, and then proceeds to generate the report, demonstrating how regular methods in abstract classes can call abstract methods.
+
+// ? Another example:
+
+abstract class vehicle2 {
+    start(): void { // Concrete method
+        console.log('Starting the vehicle...');
+    }
+    abstract drive(): void; // Abstract method
+}
+
+class Car2 extends vehicle2 {
+    drive(): void { // Implementation of the abstract method
+        console.log('Driving the car...');
+    }
+}
+
+const myCar2 = new Car2();
+myCar2.start(); // ? Output: Starting the vehicle...
+myCar2.drive(); // ? Output: Driving the car...
+// In this example, we have defined an abstract class vehicle2 with a concrete method start and an abstract method drive. The Car2 class extends vehicle2 and provides an implementation for the drive method. We can create an instance of Car2 and call both the start and drive methods, demonstrating how regular methods in abstract classes can call abstract methods.
+
+// ? Example of creating multiple abstract methods and properties in an abstract class:
+
+abstract class Employee2 {
+    abstract name: string; // Abstract property
+    abstract calculateSalary(): number; // Abstract method
+    describe(): void { // Concrete method
+        console.log(`${this.name} earns ${this.calculateSalary()} per month.`);
+    }
+}
+
+class FullTimeEmployee2 extends Employee2 {
+    name: string = 'Alice'
+    calculateSalary(): number {
+        return 5000;
+    }
+}   
+
+class PartTimeEmployee2 extends Employee2 {
+    name: string = 'Bob'
+    calculateSalary(): number {
+        return 2000;
+    }
+}
+
+const fullTimeEmp2 = new FullTimeEmployee2();
+const partTimeEmp2 = new PartTimeEmployee2();
+
+fullTimeEmp2.describe(); // ? Output: Alice earns 5000 per month.
+partTimeEmp2.describe(); // ? Output: Bob earns 2000 per month.
+// In this example, we have defined an abstract class Employee2 with an abstract property name and an abstract method calculateSalary. The FullTimeEmployee2 and PartTimeEmployee2 classes extend Employee2 and provide implementations for both the name property and the calculateSalary method. We can create instances of both classes and call the describe method, which uses both the abstract property and method to provide a description of the employee's salary.
+
+// ? Another example 
+
+abstract class Animals {
+    abstract makesound(): void;
+    abstract move(): void;
+    abstract eat(): void;
+}
+
+class Dog2 extends Animals {
+    makesound(): void {}
+    move(): void {}
+    eat(): void {}
+    run(): void {
+        console.log('Dog is running');
+    }
+}
+
+const dog = new Dog2();
+dog.makesound(); // No output, as the method is empty
+dog.move(); // No output, as the method is empty
+dog.eat(); // No output, as the method is empty
+dog.run(); // ? Output: Dog is running
+// In this example, we have defined an abstract class Animals with three abstract methods: makesound, move, and eat. The Dog2 class extends Animals and provides empty implementations for all three abstract methods, as well as an additional method run. We can create an instance of Dog2 and call the run method to see the output, while the other methods do not produce any output since they are empty.
+
+// ? Example using `protected` members in abstract classes:
+// The `protected` access modifier allows members of an abstract class to be accessible within the class itself and by subclasses, but not from outside the class hierarchy.
+
+abstract class Shapes {
+    protected calculateArea(radius: number): number { // Concrete method with protected access
+        return Math.PI * radius * radius;
+    }
+
+    abstract showArea(radius: number): void; // Abstract method
+}
+
+class Circle2 extends Shapes {
+    showArea(radius: number): void { // Implementation of the abstract method
+        const area = this.calculateArea(radius); // Accessing the protected method
+        console.log(`The area of the circle with radius ${radius} is ${area}.`);
+    }
+}
+
+
+const circle = new Circle2();
+circle.showArea(5); // ? Output: The area of the circle with radius 5 is 78.53981633974483.
+// In this example, we have defined an abstract class Shapes with a concrete method calculateArea that has protected access. The Circle2 class extends Shapes and implements the showArea method, which calls the protected calculateArea method to compute the area of the circle. We can create an instance of Circle2 and call the showArea method to see the output, demonstrating how protected members in abstract classes can be accessed by subclasses.
+
+// Trying to access the protected method from outside the class hierarchy will result in an error:
+// const shape = new Shapes(); // Error: Cannot create an instance of an abstract class.
+// shape.calculateArea(5); // Error: Property 'calculateArea' is protected and only accessible within class 'Shapes' and its subclasses.
