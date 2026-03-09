@@ -2284,3 +2284,362 @@ circle.showArea(5); // ? Output: The area of the circle with radius 5 is 78.5398
 // Trying to access the protected method from outside the class hierarchy will result in an error:
 // const shape = new Shapes(); // Error: Cannot create an instance of an abstract class.
 // shape.calculateArea(5); // Error: Property 'calculateArea' is protected and only accessible within class 'Shapes' and its subclasses.
+
+
+// ! Encapsulation:
+// Encapsulation is a fundamental principle of object-oriented programming that involves bundling data (properties) and methods (functions) that operate on that data into a single unit, typically a class. It also involves restricting direct access to some of the object's components, which is often achieved through access modifiers like `private`, `protected`, and `public`. Encapsulation helps to protect the internal state of an object and promotes modularity and maintainability in code design.
+
+// ? Access modifiers:
+// In TypeScript, you can use access modifiers to control the visibility of class members. 
+
+// Access modifiers in TypeScript are keywords that determine the visibility and accessibility of class members (properties and methods). The three main access modifiers are `public`, `private`, and `protected`.
+
+// - `public`: Members declared as public are accessible from anywhere, both inside and outside the class. By default, all members of a class are public if no access modifier is specified.
+// - `private`: Members declared as private are only accessible within the class they are declared in. They cannot be accessed from outside the class or by subclasses.
+// - `protected`: Members declared as protected are accessible within the class they are declared in and by subclasses, but not from outside the class hierarchy.
+
+// Access modifiers can be applied to properties, methods, and constructors in a class. They can also be used in abstract classes to control the accessibility of abstract methods and properties, in interfaces to define the visibility of members, and in decorators to modify the behavior of class members based on their access level.
+
+// Can access modifiers be used on the class itself? No, access modifiers cannot be applied to the class itself. They are only applicable to the members of the class (properties, methods, and constructors). The class itself is always accessible, and access modifiers are used to control the visibility of its members.
+
+// ? Public members:
+
+class obj = new profile()
+obj.name = "Kim" // Accessing the public property name
+console.log(obj.name) // ? Output: Kim
+// In this example, we have a class profile with a public property name. We can create an instance of the profile class and directly access and modify the name property from outside the class, demonstrating that it is publicly accessible.
+
+// ? Another example:
+
+class Student {
+    public name: string = "Sid" // Public property (but no need to specify public, as it's the default)
+}
+
+class Stud1 extends Student {
+    show(): void {
+        console.log(this.name) // Accessing the public property name from the parent class
+    }
+}
+
+const s = new Stud1();
+s.show(); // ? Output: Sid
+// In this example, we have a class Student with a public property name. The Stud1 class extends Student and has a method show that accesses the name property from the parent class. We can create an instance of Stud1 and call the show method to see the output, demonstrating that the public property name is accessible from both the parent class and the child class.
+
+// ? Private members:
+
+// ? Example of encapsulation using private members:
+
+class Person {
+    private name: string = "Sid"; // Private property
+    public age: number=31; // Public property
+
+    display():void {
+        console.log(this.name);
+        console.log(this.age);
+    }
+}
+
+class Child extends Person {
+    show(): void {
+        console.log(this.name); // ! Error: Property 'name' is private and only accessible within class 'Person'.
+        console.log(this.age); // Accessing the public property age from the parent class
+    }
+}
+
+const p = new Person();
+const c = new Child();
+p.display(); // ? Output: Sid 31
+console.log(p.name); // ! Error: Property 'name' is private and only accessible within class 'Person'.
+c.show(); // ? Output: 31 (but will throw an error when trying to access the private property name)
+console.log(p.age); // ? Output: 31
+console.log(p.name); // ! Error: Property 'name' is private and only accessible within class 'Person'.
+
+// ? Another example of encapsulation using private members:
+
+class Profile {
+    private name: string; // Private property
+    constructor(name: string) {
+        this.name = name;
+    }
+    getName(): string { // Public method to access the private property
+        return this.name;
+    }
+    setName(newName: string): void { // Public method to modify the private property
+        this.name = newName;
+    }
+}
+
+const userProfile = new Profile('Alice');
+console.log(userProfile.getName());
+userProfile.setName('Bob');
+console.log(userProfile.getName());
+// ? Output:
+// Alice
+// Bob
+// In this example, we have defined a class Profile with a private property name. We have also provided public getter and setter methods (getName and setName) to access and modify the private property. This encapsulation allows us to control how the name property is accessed and modified, ensuring that it cannot be directly accessed from outside the class, while still providing a way to interact with it through the public methods.
+
+// ? Another example of modifying private members using methods:
+
+class Account {
+    private balance: number = 1000; // Private property
+
+    getBalance(): void { // Public method to access the private property
+        console.log(`Current balance: ${this.balance}`);
+    }
+
+    deposit(amount: number): void { // Public method to modify the private property
+        this.balance += amount;
+    }
+}
+
+
+const b1 = new Account();
+console.log(b1.balance); // ! Error: Property 'balance' is private and only accessible within class 'Account'.
+b1.getBalance(); // ? Output: Current balance: 1000
+b1.deposit(500);
+b1.getBalance(); // ? Output: Current balance: 1500
+// In this example, we have defined a class Account with a private property balance. We have provided a public method getBalance to access the current balance and a public method deposit to modify the balance. This encapsulation allows us to control how the balance is accessed and modified, ensuring that it cannot be directly accessed from outside the class, while still providing a way to interact with it through the public methods.
+
+// ? Example of private methods:
+// Private methods are methods that can only be accessed within the class they are declared in. They cannot be called from outside the class or by subclasses.
+
+class BankAcc {
+    private balance: number = 1000; // Private property
+    private calculateInterest(): number { // Private method
+        return this.balance * 0.05; // Example interest calculation
+    }
+
+    show(): void {
+        const interest = this.calculateInterest(); // Accessing the private method within the class
+        console.log(`Interest: ${interest}`);
+    }
+}
+
+const b1 = new BankAcc();
+console.log(b1.calculateInterest()); // ! Error: Property 'calculateInterest' is private and only accessible within class 'BankAcc'.
+b1.show(); // ? Output: Interest: 50
+
+
+// ? Protected members:
+
+// ? Example of encapsulation using protected members:
+
+class Person {
+    protected name: string = "Helen" // Protected property
+
+    display(): void {
+        console.log(`Hello, my name is ${this.name}`); // Accessing the protected property within the class
+    }
+}
+
+class Child1 extends Person {
+    show(): void {
+        console.log(`Hello, my name is ${this.name}`); // Accessing the protected property from the child class
+    }
+
+const c1 = new Child1();
+c1.display(); // ? Output: Hello, my name is Helen
+c1.show(); // ? Output: Hello, my name is Helen
+c1.name = "John"; // Error: Property 'name' is protected and only accessible within class 'Person' and its subclasses.
+console.log(c1.name);
+
+const obj = new Person();
+// Error: Property 'name' is protected and only accessible within class 'Person' and its subclasses.
+console.log(obj.name);
+// In this example, we have defined a class Person with a protected property name and a method display that accesses the protected property. The Child1 class extends Person and has a method show that also accesses the protected property. We can create an instance of Child1 and call both the display and show methods to see the output, demonstrating that the protected property name is accessible within the class and by subclasses, but not from outside the class hierarchy.
+
+// ? Another example using constructors and protected members:
+
+class User {
+    public name: string = "Sid"; // Public property
+    private age: number = 31; // Private property
+    protected id: number = 123; // Protected property
+
+    constructor(name: string, age: number, id: number) {
+        this.name = name;
+        this.age = age;
+        this.id = id;
+    }
+}
+
+class Child extends User {
+    show(): void {
+        console.log(this.name); // Accessing the public property name from the parent class
+        console.log(this.id); // Accessing the protected property id from the parent class
+        // console.log(this.age); // ! Error: Property 'age' is private and only accessible within class 'User'.
+    }
+    constructor(name: string, age: number, id: number) {
+        super(name, age, id); // Calling the constructor of the parent class to initialize the properties
+        console.log("Child constructor called");
+        console.log(this.name); // Accessing the public property name from the parent class
+        console.log(this.id); // Accessing the protected property id from the parent class
+         // console.log(this.age); // ! Error: Property 'age' is private and only accessible within class 'User'.
+    }
+}
+
+let u = new User("Kevin", 27, 102);
+console.log(u.name); // ? Output: Kevin
+// console.log(u.age); // ! Error: Property 'age' is private and only accessible within class 'User'.
+// console.log(u.id); // ! Error: Property 'id' is protected and only accessible within class 'User' and its subclasses.
+
+let c = new Child("Alice", 25, 456);
+c.show();
+// ? Output:
+// Alice
+// 456
+console.log(c.name); // ? Output: Alice
+// console.log(c.age); // ! Error: Property 'age' is private and only accessible within class 'User'.
+// console.log(c.id); // ! Error: Property 'id' is protected and only accessible within class 'User' and its subclasses.
+// In this example, we have defined a class User with a constructor that initializes a public property name, a private property age, and a protected property id. The Child class extends User and has a method show that accesses the public name and protected id properties from the parent class. We can create instances of both User and Child to demonstrate the accessibility of the different properties based on their access modifiers.
+
+
+// ? Another example of encapsulation using protected members:
+class BankAccount {
+    protected balance: number; // Protected property
+    constructor(initialBalance: number) {
+        this.balance = initialBalance;
+    }
+    deposit(amount: number): void {
+        this.balance += amount;
+    }
+    withdraw(amount: number): void {
+        if (amount <= this.balance) {
+            this.balance -= amount;
+        } else {
+            console.log('Insufficient funds');
+        }
+    }
+    getBalance(): number {
+        return this.balance;
+    }
+}
+
+class SavingsAccount extends BankAccount {
+    constructor(initialBalance: number) {
+        super(initialBalance);
+    }
+    addInterest(rate: number): void {
+        this.balance += this.balance * rate;
+    }
+}
+const myAccount = new SavingsAccount(1000);
+myAccount.deposit(500);
+console.log(myAccount.getBalance());
+myAccount.addInterest(0.05);
+console.log(myAccount.getBalance());
+// ? Output:
+// 1500
+// 1575
+// In this example, we have defined a class BankAccount with a protected property balance and several methods to manage the account. The SavingsAccount class extends BankAccount and can access the protected balance property to add interest. This demonstrates encapsulation by controlling access to the balance property while still allowing subclasses to interact with it through defined methods.
+
+
+// ? Example of using protected members in an abstract class:
+
+abstract class Vehicle {
+    protected speed: number; // Protected property
+    constructor(speed: number) {
+        this.speed = speed;
+    }
+    abstract move(): void; // Abstract method
+}
+
+class Car extends Vehicle {
+    constructor(speed: number) {
+        super(speed);
+    }
+    move(): void {
+        console.log(`The car is moving at ${this.speed} km/h.`);
+    }
+}
+
+const myCar = new Car(120);
+myCar.move(); // ? Output: The car is moving at 120 km/h.
+// In this example, we have defined an abstract class Vehicle with a protected property speed and an abstract method move. The Car class extends Vehicle and provides an implementation for the move method, which accesses the protected speed property. We can create an instance of Car and call the move method to see the output, demonstrating how protected members can be used in abstract classes and accessed by subclasses.
+
+// ? Example of protected methods:
+
+class Person {
+    protected greet(): void {
+        console.log("Hello from Person!");
+    }
+
+    constructor() {
+        console.log("Person constructor called");
+        this.greet(); // Accessing the protected method within the class
+    }
+}
+
+class Employee extends Person {
+    show(): void {
+        this.greet(); // Accessing the protected method from the child class
+    }
+}
+
+const emp = new Employee();
+emp.show(); // ? Output: Hello from Person!
+// emp.greet(); // ! Error: Property 'greet' is protected and only accessible within class 'Person' and its subclasses.
+
+// In this example, we have defined a class Person with a protected method greet and a constructor that calls the greet method. The Employee class extends Person and has a method show that also calls the greet method. When we create an instance of Employee, it first calls the constructor of Person, which in turn calls the greet method to display the message. We can also call the show method on the Employee instance to see the same output, demonstrating how protected methods can be accessed within the class and by subclasses.
+
+// ? Another example:
+
+class BankAccount {
+    private balance: number = 1000; // Private property
+    private pin: number = 1234; // Private property
+
+    checkBalance(inputPin: number): void {
+        if (inputPin === this.pin) {
+            console.log(`Your balance is: ${this.balance}`);
+        } else {
+            console.log('Incorrect PIN');
+        }
+    }
+
+    deposit(amount: number, inputPin: number): void {
+        if (inputPin === this.pin) {
+            if (amount > 0) {
+
+                this.balance += amount;
+                console.log(`Deposited ${amount}. New balance is: ${this.balance}`);
+            } else {
+                console.log('Invalid amount');
+            }
+        } else {
+            console.log('Incorrect PIN');
+        }
+    }
+
+    withdraw(amount: number, inputPin: number): void {
+        if (inputPin! == this.pin) {
+            console.log('Incorrect PIN');
+        } else if { (amount > this.balance) {
+            console.log('Insufficient funds');
+        } else if (amount <= 0) {
+            console.log('Invalid amount. Please enter a positive value.');
+        } else {
+            this.balance -= amount;
+            console.log(`Withdrew ${amount}. New balance is: ${this.balance}`);
+        }
+    }
+
+    changePin(oldPin: number, newPin: number): void {
+        if (oldPin === this.pin) {
+            this.pin = newPin;
+            console.log('PIN changed successfully');
+        } else {
+            console.log('Incorrect old PIN');
+        }
+    }
+}
+
+const myAccount = new BankAccount();
+myAccount.checkBalance(1234); // ? Output: Your balance is: 1000
+myAccount.deposit(500, 1234); // ? Output: Deposited 500. New balance is: 1500
+myAccount.withdraw(200, 1234); // ? Output: Withdrew 200. New balance is: 1300
+myAccount.withdraw(1500, 1234); // ? Output: Insufficient funds
+myAccount.deposit(-100, 1234); // ? Output: Invalid amount
+myAccount.withdraw(-50, 1234); // ? Output: Invalid amount. Please enter a positive value.
+myAccount.changePin(1234, 5678); // ? Output: PIN changed successfully
+myAccount.changePin(1234, 5678); // ? Output: Incorrect old PIN
+
+// In this example, we have defined a class BankAccount with private properties balance and pin. We have provided public methods checkBalance, deposit, and withdraw that require the correct PIN to access and modify the balance. This encapsulation ensures that the internal state of the BankAccount is protected and can only be accessed or modified through the defined methods, which also include validation for the input values.
